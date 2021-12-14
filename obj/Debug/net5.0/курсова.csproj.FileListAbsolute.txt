@@ -109,3 +109,4 @@ C:\Users\Sofia\my\draft\obj\Debug\net5.0\курсова.dll
 C:\Users\Sofia\my\draft\obj\Debug\net5.0\ref\курсова.dll
 C:\Users\Sofia\my\draft\obj\Debug\net5.0\курсова.pdb
 C:\Users\Sofia\my\draft\obj\Debug\net5.0\курсова.genruntimeconfig.cache
+C:\Users\Sofia\my\draft\bin\Debug\net5.0\ScottPlot.dll

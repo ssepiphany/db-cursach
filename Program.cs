@@ -32,8 +32,8 @@ namespace курсова
                 }
 
                 
-                List<string> actionList = new List<string>() {"generate", "insert", "delete", "update", "search"};
-                List<string> tableNames = new List<string>() {"student", "teacher", "subject", "performance", "teacherStudent"}; 
+                List<string> actionList = new List<string>() {"generate", "insert", "delete", "update", "search", "statistics"};
+                List<string> tableNames = new List<string>() {"student", "teacher", "subject", "performance", "teacherStudent", }; 
                 string[] command = new string[2];
                 int counter = 0; 
                 do
@@ -79,8 +79,8 @@ namespace курсова
                 string line = "";
                 line += doc1.DocumentNode.SelectNodes("//div[@class='jsx-4181252039 name']")[i].InnerHtml.Trim();
                 line = line + " " + doc2.DocumentNode.SelectNodes("//td[@class='Left']")[i % 100].InnerHtml.Trim();
-                if (i == 499) writer.Write(line);
-                else writer.WriteLine(line);
+                if (i == 499) writer.Write(line.Trim());
+                else writer.WriteLine(line.Trim());
             }
 
             writer.Close();
@@ -184,6 +184,19 @@ namespace курсова
                         break;
                     case "teacherStudent":
                         Controller.ProcessTeacherStudentSearch();
+                        break;
+                }
+            }
+
+            else if (command[1] == "statistics")
+            {
+                switch (command[0])
+                {
+                    case "student": 
+                        Controller.ProcessStudentStatistics();
+                        break;
+                    case "teacher":
+                        Controller.ProcessTeacherStatistics();
                         break;
                 }
             }

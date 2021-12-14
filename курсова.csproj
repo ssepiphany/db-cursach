@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="HTMLAgilityPack" Version="1.11.38" />
     <PackageReference Include="MySql.Data" Version="8.0.27" />
+    <PackageReference Include="ScottPlot" Version="4.1.27" />
   </ItemGroup>
 
 </Project>

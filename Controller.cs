@@ -548,4 +548,128 @@ static class Controller
         } 
         View.DisplayTeacherStudentSearch(res);
     }
+
+    //STATISTICS
+
+    public static void ProcessStudentStatistics()
+    {
+        Console.WriteLine(@"Please, choose option number from this list:
+1) Average students' mark of every specialty.
+2) Student average mark statistics (all subjects).
+3) Specialty average mark statistics (all subjects).
+4) Change of student's marks.");
+        int option;
+        while (!int.TryParse(ReadLine(), out option) || option <= 0 || option >= 5)
+        {
+            Console.Write("Wrong option.\r\nOption: ");
+        }
+
+        if (option == 1)
+        {
+            BuildAverageMarkStatistics();
+        }
+        else if (option == 2)
+        {
+            BuildStudentStatistics();
+        }
+        else if (option == 3)
+        {
+            BuilSpecialtyStatistics();
+        }
+        else if (option == 4)
+        {
+            BuildMarkChangeStatistics();
+        }
+    }
+
+    public static void ProcessTeacherStatistics()
+    {
+//         Console.WriteLine(@"Please, choose option number from this list:
+// 1) Top 6 the most experienced teachers.
+// 2) Teacher subject distribution.");
+//         int option;
+//         while (!int.TryParse(ReadLine(), out option) || option < 1 || option > 2)
+//         {
+//             Console.Write("Wrong option.\r\nOption: ");
+//         }
+
+        // if (option == 1)
+        // {
+        //     BuildTopTeachersStatistics();
+        // }
+        // else if (option == 2)
+        // {
+        //     BuildTeacherSubjectDistribution();
+        // }
+        Console.WriteLine("Teacher subject distribution.");
+
+        Dictionary<string, long> res = teacherRepo.GetTeacherSubjectDistribution();
+        string graphic = GraphicsBuilder.BuildTeacherSubjectDistribution(res);
+        Console.WriteLine($"Diagram was saved in this directory ({graphic}).");
+    }
+
+    private static void BuildAverageMarkStatistics()
+    {
+        Dictionary<string, decimal> res = studentRepo.GetSpecialtyPerformance();
+        string graphic = GraphicsBuilder.BuildSpeciltyGeneralPerformance(res);
+        Console.WriteLine($"Diagram was saved in this directory ({graphic}).");
+    }
+
+    private static void BuildStudentStatistics()
+    {
+        Write("Student fullname: ");
+        string fullname = ReadLine().Trim();
+        while (Controller.studentRepo.GetByFullname(fullname) == null)
+        {
+            Write("Invalid student fullname.\r\nFullname: ");
+            fullname = ReadLine().Trim();
+        }
+
+        Dictionary<string, decimal> res = studentRepo.GetStudentStatistics(fullname);
+        string graphic = GraphicsBuilder.BuildStudentPerformance(res, fullname);
+        Console.WriteLine($"Diagram was saved in this directory ({graphic}).");
+    }
+
+    private static void BuilSpecialtyStatistics()
+    {
+        List<string> specialties = new List<string> {"Maths", "Languages", "Biology", "PE", "Science", "History", "Literature"};
+        Write("Specialty: ");
+        string specialty = ReadLine().Trim();
+        while (!specialties.Contains(specialty))
+        {
+            Write("Invalid specialty.\r\nSpecialty: ");
+            specialty = ReadLine().Trim();
+        }
+
+        Dictionary<string, decimal> res = studentRepo.GetSpecialtyStatistics(specialty);
+        string graphic = GraphicsBuilder.BuildSpecialtyPerformance(res, specialty);
+        Console.WriteLine($"Diagram was saved in this directory ({graphic}).");
+    }
+
+    private static void BuildMarkChangeStatistics()
+    {
+        Write("Student fullname: ");
+        string fullname = ReadLine().Trim();
+        while (Controller.studentRepo.GetByFullname(fullname) == null)
+        {
+            Write("Invalid student fullname.\r\nFullname: ");
+            fullname = ReadLine().Trim();
+        }
+
+        Dictionary<DateTime, decimal> res = studentRepo.GetStudentProgressReport(fullname);
+        string graphic = GraphicsBuilder.BuildStudentProgress(res, fullname);
+        Console.WriteLine($"Graphic was saved in this directory ({graphic}).");
+    }
+
+    // private static void BuildTeacherSubjectDistribution()
+    // {
+    //     Dictionary<string, long> res = teacherRepo.GetTeacherSubjectDistribution();
+    //     GraphicsBuilder.BuildTeacherSubjectDistribution(res);
+    // }
+
+    // private static void BuildTopTeachersStatistics()
+    // {
+    //     List<Teacher> teachers =  teacherRepo.GetTopTeachersForStatistics();
+    //     GraphicsBuilder.BuildTopTeacherGraphic(teachers);
+    // }
 }

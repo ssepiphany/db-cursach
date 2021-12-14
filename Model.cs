@@ -35,7 +35,7 @@ class StudentModel
             SELECT 
                 (SELECT title AS fullname FROM studentsdb.Fullname ORDER BY RAND() LIMIT 1) AS res1,
                 (SELECT FLOOR(RAND()*(19-6+1)+6) AS age) AS res2,
-                (SELECT ELT(0.5 + RAND() * 11, 'Maths', 'Biology', 'Languages', 'PE', 'Crafts', 'Geography', 'Science', 'Physics', 'History', 'IT', 'Literature')) AS res3,
+                (SELECT ELT(0.5 + RAND() * 7, 'Maths', 'Biology', 'PE', 'Languages', 'Science', 'History', 'Literature')) AS res3,
                 (SELECT id AS tutorId FROM studentsdb.Teacher ORDER BY RAND() LIMIT 1) AS res4
                 FROM nums";
             // CROSS JOIN
@@ -64,6 +64,106 @@ class StudentModel
             reader.Close(); 
             return null; 
         } 
+    }
+
+    public Student GetByFullname(string fullname)
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = "SELECT * FROM Student WHERE fullname = @fullname";
+        command.Parameters.AddWithValue("fullname", fullname); 
+        MySqlDataReader reader = command.ExecuteReader(); 
+        if (reader.Read())
+        {
+            Student student = ReadStudent(reader); 
+            reader.Close(); 
+            return student;
+        } 
+        else
+        {
+            reader.Close(); 
+            return null; 
+        } 
+    }
+
+    public Dictionary<string, decimal> GetSpecialtyPerformance()
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = @"SELECT specialty, avg(mark) 
+            FROM Student LEFT JOIN Performance
+            ON Student.id = Performance.studentId
+            GROUP BY specialty";
+        MySqlDataReader reader = command.ExecuteReader(); 
+        Dictionary<string, decimal> res = new Dictionary<string, decimal>();
+        while (reader.Read())
+        {
+            res.Add(reader.GetString(0), reader.GetFieldValue<decimal>(1));
+        } 
+
+        reader.Close(); 
+        return res;
+    }
+
+    public Dictionary<string, decimal> GetStudentStatistics(string fullname)
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = @"SELECT title, avg(mark)
+            FROM Student, Performance, Subject 
+            WHERE Student.id = Performance.studentId
+            AND Performance.subjectId = Subject.id
+            AND Student.fullname = @fullname
+            GROUP BY Subject.title";
+        command.Parameters.AddWithValue("fullname", fullname); 
+        MySqlDataReader reader = command.ExecuteReader(); 
+        Dictionary<string, decimal> res = new Dictionary<string, decimal>();
+        while (reader.Read())
+        {
+            res.Add(reader.GetString(0), reader.GetFieldValue<decimal>(1));
+        } 
+
+        reader.Close(); 
+        return res;
+    }
+
+    public Dictionary<string, decimal> GetSpecialtyStatistics(string specialty)
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = @"SELECT subject.title, avg(mark)
+            FROM Student, Performance, Subject 
+            WHERE Student.id = Performance.studentId
+            AND Performance.subjectId = Subject.id
+            AND specialty = @specialty
+            GROUP BY Subject.title";
+        command.Parameters.AddWithValue("specialty", specialty); 
+        MySqlDataReader reader = command.ExecuteReader(); 
+        Dictionary<string, decimal> res = new Dictionary<string, decimal>();
+        while (reader.Read())
+        {
+            res.Add(reader.GetString(0), reader.GetFieldValue<decimal>(1));
+        } 
+
+        reader.Close(); 
+        return res;
+    }
+
+    public Dictionary<DateTime, decimal> GetStudentProgressReport(string fullname)
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = @"SELECT date, avg(mark)
+            FROM Student CROSS JOIN Performance
+            WHERE Student.id = Performance.studentId
+            AND fullname = @fullname
+            GROUP BY date
+            ORDER BY date ASC;";
+        command.Parameters.AddWithValue("fullname", fullname); 
+        MySqlDataReader reader = command.ExecuteReader(); 
+        Dictionary<DateTime, decimal> res = new Dictionary<DateTime, decimal>();
+        while (reader.Read())
+        {
+            res.Add(reader.GetFieldValue<DateTime>(0), reader.GetFieldValue<decimal>(1));
+        } 
+
+        reader.Close(); 
+        return res;
     }
 
     public int Insert(Student student) 
@@ -167,7 +267,7 @@ class StudentModel
         LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/fullnames.csv'
         INTO TABLE Fullname
         FIELDS TERMINATED BY ','
-        LINES TERMINATED BY '\n';";
+        LINES TERMINATED BY '\r\n';";
 
         res = command.ExecuteNonQuery();
 
@@ -246,6 +346,24 @@ class TeacherModel
         } 
     }
 
+    // public List<Teacher> GetTopTeachersForStatistics()
+    // {
+    //     MySqlCommand command = connection.CreateCommand(); 
+    //     command.CommandText = @"SELECT * from Teacher 
+    //         ORDER BY experience DESC
+    //         limit 6";
+    //     MySqlDataReader reader = command.ExecuteReader();
+
+    //     List<Teacher> res = new List<Teacher>();
+    //     while (reader.Read())
+    //     {
+    //         Teacher teacher = ReadTeacher(reader); 
+    //         res.Add(teacher);
+    //     } 
+
+    //     return res;
+    // }
+
     public List<Teacher> GetGroupAbsentTeachers()
     {
         MySqlCommand command = connection.CreateCommand(); 
@@ -260,6 +378,23 @@ class TeacherModel
         {
             Teacher teacher = ReadTeacher(reader); 
             res.Add(teacher);
+        } 
+
+        reader.Close(); 
+        return res;
+    }
+
+    public Dictionary<string, long> GetTeacherSubjectDistribution()
+    {
+        MySqlCommand command = connection.CreateCommand(); 
+        command.CommandText = @"SELECT title, COUNT(*) FROM Teacher, Subject
+            WHERE Teacher.subjectId = Subject.id 
+            GROUP BY subjectId";
+        MySqlDataReader reader = command.ExecuteReader(); 
+        Dictionary<string, long> res = new Dictionary<string, long>();
+        while (reader.Read())
+        {
+            res.Add(reader.GetString(0), reader.GetFieldValue<long>(1));
         } 
 
         reader.Close(); 

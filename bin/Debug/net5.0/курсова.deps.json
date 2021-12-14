@@ -9,7 +9,8 @@
       "курсова/1.0.0": {
         "dependencies": {
           "HtmlAgilityPack": "1.11.38",
-          "MySql.Data": "8.0.27"
+          "MySql.Data": "8.0.27",
+          "ScottPlot": "4.1.27"
         },
         "runtime": {
           "курсова.dll": {}
@@ -120,6 +121,17 @@
           "lib/net5.0/ZstdNet.dll": {
             "assemblyVersion": "1.4.5.0",
             "fileVersion": "1.4.5.0"
+          }
+        }
+      },
+      "ScottPlot/4.1.27": {
+        "dependencies": {
+          "System.Drawing.Common": "4.7.0"
+        },
+        "runtime": {
+          "lib/net5.0/ScottPlot.dll": {
+            "assemblyVersion": "4.1.27.0",
+            "fileVersion": "4.1.27.0"
           }
         }
       },
@@ -292,6 +304,13 @@
       "sha512": "sha512-Ef+sH12/nGAiF9yLZFkuXh7vtVvEPiLKyZNJiDk+VBULzLcXj0lmfU7qcmWNCSVX5n6zu5jMV+JaNf1C+a+T8g==",
       "path": "mysql.data/8.0.27",
       "hashPath": "mysql.data.8.0.27.nupkg.sha512"
+    },
+    "ScottPlot/4.1.27": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Yy+vEeaECR3+t9LW8fcLq/0rYZwupw6kagHhtVSnfPslC7p3ZQfZOLFBgBSmumIVtkkZdG4SAsJbvChaep0OTg==",
+      "path": "scottplot/4.1.27",
+      "hashPath": "scottplot.4.1.27.nupkg.sha512"
     },
     "System.Buffers/4.5.1": {
       "type": "package",

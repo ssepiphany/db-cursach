@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "hvy9sqtC8+CUkK5Dna2M9oKnUFGkCE6Eb5oO4l5ohO4nnUqEl68Q31vQvKo2wEaw+sVxDqtQTcdv00i0DArXFA==",
+  "dgSpecHash": "xue9H/JPCeRTqd7V7C+kauTaDEoFjSpQwhEGO1Hyg4SgAmXuZYoyWo06/RU6NF71yhm1wNNNE9AJextaE1RKkg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Sofia\\my\\draft\\курсова.csproj",
   "expectedPackageFiles": [
@@ -13,6 +13,7 @@
     "C:\\Users\\Sofia\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\Sofia\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\Sofia\\.nuget\\packages\\mysql.data\\8.0.27\\mysql.data.8.0.27.nupkg.sha512",
+    "C:\\Users\\Sofia\\.nuget\\packages\\scottplot\\4.1.27\\scottplot.4.1.27.nupkg.sha512",
     "C:\\Users\\Sofia\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\Sofia\\.nuget\\packages\\system.configuration.configurationmanager\\4.4.1\\system.configuration.configurationmanager.4.4.1.nupkg.sha512",
     "C:\\Users\\Sofia\\.nuget\\packages\\system.drawing.common\\4.7.0\\system.drawing.common.4.7.0.nupkg.sha512",

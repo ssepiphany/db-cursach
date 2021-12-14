@@ -25,7 +25,7 @@ static class Filler
             Write("Age: ");
         }
 
-        List<string> specialties = new List<string> {"Maths", "Biology", "Languages", "PE", "Crafts", "Geography", "Science", "Physics", "History", "IT", "Literature"};
+        List<string> specialties = new List<string> {"Maths", "Languages", "Biology", "PE", "Science", "History", "Literature"};
         Write("Specialty: ");
         student.specialty = ReadLine();
         while (!specialties.Contains(student.specialty))
