@@ -4,6 +4,8 @@ using System.Data;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
+using ScottPlot;
 
 namespace курсова
 {
@@ -11,56 +13,69 @@ namespace курсова
     {
         static void Main(string[] args)
         {
-            string connStr = "server=localhost;user=root;database=studentsdb;password=210403;";
+            // string connStr = "server=localhost;user=root;database=studentsdb;password=210403;";
             
-            MySqlConnection conn = new MySqlConnection(connStr);
+            // MySqlConnection conn = new MySqlConnection(connStr);
       
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
-            {
-                Controller.teacherRepo = new TeacherModel(conn);
-                Controller.studentRepo = new StudentModel(conn);
-                Controller.subjectRepo = new SubjectModel(conn);
-                Controller.performanceRepo = new PerformanceModel(conn);
-                Controller.teacherStudentRepo = new TeacherStudentModel(conn);
+            // conn.Open();
+            // if (conn.State == ConnectionState.Open)
+            // {
+            //     Controller.teacherRepo = new TeacherModel(conn);
+            //     Controller.studentRepo = new StudentModel(conn);
+            //     Controller.subjectRepo = new SubjectModel(conn);
+            //     Controller.performanceRepo = new PerformanceModel(conn);
+            //     Controller.teacherStudentRepo = new TeacherStudentModel(conn);
 
 
-                if (!File.Exists("C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/fullnames.csv"))
-                {
-                    GenerateFullnames();
-                    Controller.CreateData();
-                }
+            //     if (!File.Exists("C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/fullnames.csv"))
+            //     {
+            //         GenerateFullnames();
+            //         Controller.CreateData();
+            //     }
+
+                // Stopwatch watch = new Stopwatch();
+                // StudentModel studentRepo = new StudentModel(conn);
+                // TeacherModel teacherRepo = new TeacherModel(conn);
+                // SubjectModel subjectRepo = new SubjectModel(conn);
+                // PerformanceModel performanceRepo = new PerformanceModel(conn);
+                // TeacherStudentModel teacherStudentRepo = new TeacherStudentModel(conn);
+
+                // watch.Start();
+                // teacherStudentRepo.SearchByStudentAndSubject("a", "a");
+                // watch.Stop();
+                // Console.WriteLine(watch.ElapsedMilliseconds);
+
 
                 
-                List<string> actionList = new List<string>() {"generate", "insert", "delete", "update", "search", "statistics"};
-                List<string> tableNames = new List<string>() {"student", "teacher", "subject", "performance", "teacherStudent", }; 
-                string[] command = new string[2];
-                int counter = 0; 
-                do
-                {
-                    if (counter != 0) WriteLine("Invalid input.");
-                    if (counter == 0) 
-                    {
-                        WriteLine($"List of actions: {string.Join(", ", actionList)};");
-                        // Write("Do you want to see search options(y/n): ");
-                        // if (ReadLine() == "y") WriteLine("Search options:\n1) actors (movies, movieActors)\n2) users (reviews, movies)\n3) reviews (movies)");
-                    }
+            //     List<string> actionList = new List<string>() {"generate", "insert", "delete", "update", "search", "statistics"};
+            //     List<string> tableNames = new List<string>() {"student", "teacher", "subject", "performance", "teacherStudent", }; 
+            //     string[] command = new string[2];
+            //     int counter = 0; 
+            //     do
+            //     {
+            //         if (counter != 0) WriteLine("Invalid input.");
+            //         if (counter == 0) 
+            //         {
+            //             WriteLine($"List of actions: {string.Join(", ", actionList)};");
+            //             // Write("Do you want to see search options(y/n): ");
+            //             // if (ReadLine() == "y") WriteLine("Search options:\n1) actors (movies, movieActors)\n2) users (reviews, movies)\n3) reviews (movies)");
+            //         }
 
 
-                    WriteLine("Please, enter your command in this format: {table name} {action}");
-                    command = ReadLine().Trim().Split();
-                    counter ++; 
-                }
-                while(command.Length <= 1 || !actionList.Contains(command[1]) || !tableNames.Contains(command[0]));
+            //         WriteLine("Please, enter your command in this format: {table name} {action}");
+            //         command = ReadLine().Trim().Split();
+            //         counter ++; 
+            //     }
+            //     while(command.Length <= 1 || !actionList.Contains(command[1]) || !tableNames.Contains(command[0]));
 
-                ProcessCommand(command);
+            //     ProcessCommand(command);
 
-                conn.Close();
-            }
-            else
-            {
-                WriteLine("Error occured while connecting to database !") ; 
-            }
+            //     conn.Close();
+            // }
+            // else
+            // {
+            //     WriteLine("Error occured while connecting to database !") ; 
+            // }
         }
 
         static void GenerateFullnames()

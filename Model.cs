@@ -203,7 +203,8 @@ class StudentModel
     public List<List<string>> SearchStudentsByFullname(string fullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname FROM Student CROSS JOIN Teacher
+        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+            FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
             AND student.fullname Like '%{fullnameFilter}%'";
         command.Parameters.AddWithValue("fullnameFilter", fullnameFilter); 
@@ -221,7 +222,8 @@ class StudentModel
     public List<List<string>> SearchStudentsBySpecialty(string specialtyFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname FROM Student CROSS JOIN Teacher
+        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+            FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
             AND student.specialty Like '%{specialtyFilter}%'";
         command.Parameters.AddWithValue("specialtyFilter", specialtyFilter); 
@@ -239,7 +241,8 @@ class StudentModel
     public List<List<string>> SearchStudentsByAge(int minAge, int maxAge)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname FROM Student CROSS JOIN Teacher
+        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+            FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
             AND student.age BETWEEN {minAge} AND {maxAge}";
         command.Parameters.AddWithValue("minAge", minAge); 
@@ -364,25 +367,25 @@ class TeacherModel
     //     return res;
     // }
 
-    public List<Teacher> GetGroupAbsentTeachers()
-    {
-        MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT * FROM Teacher 
-            LEFT JOIN Student ON Teacher.id = Student.tutorId
-            WHERE NOT EXISTS (
-            SELECT * FROM Student
-            WHERE Student.tutorId = Teacher.id);";
-        MySqlDataReader reader = command.ExecuteReader(); 
-        List<Teacher> res = new List<Teacher>();
-        while (reader.Read())
-        {
-            Teacher teacher = ReadTeacher(reader); 
-            res.Add(teacher);
-        } 
+    // public List<Teacher> GetGroupAbsentTeachers()
+    // {
+    //     MySqlCommand command = connection.CreateCommand(); 
+    //     command.CommandText = $@"SELECT * FROM Teacher 
+    //         LEFT JOIN Student ON Teacher.id = Student.tutorId
+    //         WHERE NOT EXISTS (
+    //         SELECT * FROM Student
+    //         WHERE Student.tutorId = Teacher.id);";
+    //     MySqlDataReader reader = command.ExecuteReader(); 
+    //     List<Teacher> res = new List<Teacher>();
+    //     while (reader.Read())
+    //     {
+    //         Teacher teacher = ReadTeacher(reader); 
+    //         res.Add(teacher);
+    //     } 
 
-        reader.Close(); 
-        return res;
-    }
+    //     reader.Close(); 
+    //     return res;
+    // }
 
     public Dictionary<string, long> GetTeacherSubjectDistribution()
     {
@@ -436,7 +439,8 @@ class TeacherModel
     public List<List<string>> SearchTeachersByFullanme(string fullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT fullname, experience, title FROM Teacher CROSS JOIN Subject
+        command.CommandText = $@"SELECT fullname, experience, title 
+            FROM Teacher CROSS JOIN Subject
             WHERE Teacher.subjectId = Subject.id
             AND fullname Like '%{fullnameFilter}%'";
         command.Parameters.AddWithValue("fullnameFilter", fullnameFilter); 
@@ -454,7 +458,8 @@ class TeacherModel
     public List<List<string>> SearchTeachersBySubject(string subjectFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT fullname, experience, title FROM Teacher CROSS JOIN Subject
+        command.CommandText = $@"SELECT fullname, experience, title 
+            FROM Teacher CROSS JOIN Subject
             WHERE Teacher.subjectId = Subject.id
             AND title Like '%{subjectFilter}%'";
         command.Parameters.AddWithValue("subjectFilter", subjectFilter); 
@@ -472,7 +477,8 @@ class TeacherModel
     public List<List<string>> SearchTeachersBySubjectAndExperience(string subjectFilter, int minExperience)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT fullname, experience, title, examDate FROM Teacher CROSS JOIN Subject
+        command.CommandText = $@"SELECT fullname, experience, title, examDate 
+            FROM Teacher CROSS JOIN Subject
             WHERE Teacher.subjectId = Subject.id
             AND title Like '%{subjectFilter}%'
             AND experience >= {minExperience}";
@@ -687,7 +693,8 @@ class PerformanceModel
     public Performance GetByStudentId(int id)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, Performance.mark, Performance.date 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, 
+            Performance.mark, Performance.date 
             FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id
             LEFT JOIN Subject 
@@ -745,7 +752,8 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudent(string studentFullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date FROM Performance LEFT JOIN Student 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+            FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
             WHERE fullname Like '%{studentFullnameFilter}%'";
@@ -765,7 +773,8 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudentAndSubject(string studentFullnameFilter, string subjectFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date FROM Performance LEFT JOIN Student 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+            FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
             WHERE fullname Like '%{studentFullnameFilter}%'
@@ -786,7 +795,8 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudentAndDate(string studentFullnameFilter, DateTime dateMinValue)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date FROM Performance LEFT JOIN Student 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+            FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
             WHERE fullname Like '%{studentFullnameFilter}%'
