@@ -19,11 +19,13 @@ static class Filler
         }
 
         Write("age: ");
-        while (!int.TryParse(ReadLine(), out student.age))
+        int age = 0;
+        while (!int.TryParse(ReadLine(), out age))
         {
             WriteLine("Invalid age.");
             Write("Age: ");
         }
+        student.age = age;
 
         List<string> specialties = new List<string> {"Maths", "Languages", "Biology", "PE", "Science", "History", "Literature"};
         Write("Specialty: ");
@@ -36,11 +38,13 @@ static class Filler
         }
 
         Write("Tutor id: ");
-        while (!int.TryParse(ReadLine(), out student.tutorId) || Controller.teacherRepo.GetById(student.tutorId) == null)
+        int tutorId = 0;
+        while (!int.TryParse(ReadLine(), out tutorId) || Controller.teacherRepo.GetById(tutorId) == null)
         {
             WriteLine("Invalid tutor id.");
             Write("Tutor id: ");
         }
+        student.tutorId = tutorId;
 
         return student;
     }
@@ -67,11 +71,13 @@ static class Filler
         }
 
         Write("Subject id: ");
-        while (!int.TryParse(ReadLine(), out teacher.subjectId) || Controller.subjectRepo.GetById(teacher.subjectId) == null)
+        int subjectId = 0; 
+        while (!int.TryParse(ReadLine(), out subjectId) || Controller.subjectRepo.GetById(subjectId) == null)
         {
             WriteLine("Invalid subject id.");
             Write("Subject id: ");
         }
+        teacher.subjectId = subjectId;
 
         return teacher;
     }

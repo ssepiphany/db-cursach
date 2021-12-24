@@ -23,7 +23,6 @@ static class Controller
             return;
         }
 
-        // teacherSubjectRepo.DeleteAllByActorId(id);
         int res = studentRepo.DeleteById(id);
         if (res != -1)
         {
@@ -44,9 +43,6 @@ static class Controller
             View.DisplayMessage($"Record with id {id} in teachers table doesn't exist.");
             return;
         }
-
-        // teacherSubjectRepo.DeleteAllByMovieId(id);
-        // subjectRepo.DeleteAllByMovieId(id);
 
         int res = teacherRepo.DeleteById(id);
         if (res != -1)
@@ -94,7 +90,6 @@ static class Controller
         if (res != -1)
         {
             View.DisplayMessage($"Record with id {id} in performances table was successfully deleted.");
-            // subjectRepo.DeleteAllByUserId(id);
         }
         else
         {
@@ -584,23 +579,6 @@ static class Controller
 
     public static void ProcessTeacherStatistics()
     {
-//         Console.WriteLine(@"Please, choose option number from this list:
-// 1) Top 6 the most experienced teachers.
-// 2) Teacher subject distribution.");
-//         int option;
-//         while (!int.TryParse(ReadLine(), out option) || option < 1 || option > 2)
-//         {
-//             Console.Write("Wrong option.\r\nOption: ");
-//         }
-
-        // if (option == 1)
-        // {
-        //     BuildTopTeachersStatistics();
-        // }
-        // else if (option == 2)
-        // {
-        //     BuildTeacherSubjectDistribution();
-        // }
         Console.WriteLine("Teacher subject distribution.");
 
         Dictionary<string, long> res = teacherRepo.GetTeacherSubjectDistribution();
@@ -660,16 +638,4 @@ static class Controller
         string graphic = GraphicsBuilder.BuildStudentProgress(res, fullname);
         Console.WriteLine($"Graphic was saved in this directory ({graphic}).");
     }
-
-    // private static void BuildTeacherSubjectDistribution()
-    // {
-    //     Dictionary<string, long> res = teacherRepo.GetTeacherSubjectDistribution();
-    //     GraphicsBuilder.BuildTeacherSubjectDistribution(res);
-    // }
-
-    // private static void BuildTopTeachersStatistics()
-    // {
-    //     List<Teacher> teachers =  teacherRepo.GetTopTeachersForStatistics();
-    //     GraphicsBuilder.BuildTopTeacherGraphic(teachers);
-    // }
 }

@@ -5,10 +5,6 @@ using MySql.Data;
 using System.Collections.Generic;
 using System.Linq;
 
-// interface IModel
-// {
-    
-// }
 
 class StudentModel
 {
@@ -38,10 +34,6 @@ class StudentModel
                 (SELECT ELT(0.5 + RAND() * 7, 'Maths', 'Biology', 'PE', 'Languages', 'Science', 'History', 'Literature')) AS res3,
                 (SELECT id AS tutorId FROM studentsdb.Teacher ORDER BY RAND() LIMIT 1) AS res4
                 FROM nums";
-            // CROSS JOIN
-            //     ( SELECT 0 AS l UNION SELECT 1  UNION SELECT 2  UNION SELECT 3  UNION SELECT 4  UNION SELECT 5  UNION SELECT 6  UNION SELECT 7  UNION SELECT 8  UNION SELECT 9 ) l";
-        // command.Parameters.AddWithValue("fullname", File.ReadLines("./fullnames.txt").Skip(random.Next(1, 501)).Take(1).First());
-        // command.Parameters.AddWithValue("specialty", specialties[random.Next(0, specialties.Length-1)]);
         command.Parameters.AddWithValue("rows", rows);
         int res = command.ExecuteNonQuery();
         return res;
@@ -203,10 +195,15 @@ class StudentModel
     public List<List<string>> SearchStudentsByFullname(string fullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+        command.CommandText = $@"(SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
             FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
-            AND student.fullname Like '%{fullnameFilter}%'";
+            AND student.fullname Like '%{fullnameFilter}%')
+            UNION 
+            (SELECT Student.id, Student.fullname, age, specialty, tutorId, fullname = NULL
+            FROM Student 
+            WHERE Student.tutorId IS NULL
+            AND student.fullname Like '%{fullnameFilter}%')";
         command.Parameters.AddWithValue("fullnameFilter", fullnameFilter); 
         MySqlDataReader reader = command.ExecuteReader(); 
         List<List<string>> res = new List<List<string>>();
@@ -222,10 +219,15 @@ class StudentModel
     public List<List<string>> SearchStudentsBySpecialty(string specialtyFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+        command.CommandText = $@"(SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
             FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
-            AND student.specialty Like '%{specialtyFilter}%'";
+            AND student.specialty Like '%{specialtyFilter}%')
+            UNION 
+            (SELECT Student.id, Student.fullname, age, specialty, tutorId, fullname = NULL
+            FROM Student 
+            WHERE Student.tutorId IS NULL
+            AND student.specialty Like '%{specialtyFilter}%')";
         command.Parameters.AddWithValue("specialtyFilter", specialtyFilter); 
         MySqlDataReader reader = command.ExecuteReader(); 
         List<List<string>> res = new List<List<string>>();
@@ -241,10 +243,15 @@ class StudentModel
     public List<List<string>> SearchStudentsByAge(int minAge, int maxAge)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
+        command.CommandText = $@"(SELECT Student.id, Student.fullname, age, specialty, tutorId, Teacher.fullname 
             FROM Student CROSS JOIN Teacher
             WHERE Student.tutorId = teacher.id
-            AND student.age BETWEEN {minAge} AND {maxAge}";
+            AND student.age BETWEEN {minAge} AND {maxAge})
+            UNION 
+            (SELECT Student.id, Student.fullname, age, specialty, tutorId, fullname = NULL
+            FROM Student 
+            WHERE Student.tutorId IS NULL
+            AND student.age BETWEEN {minAge} AND {maxAge})";
         command.Parameters.AddWithValue("minAge", minAge); 
         command.Parameters.AddWithValue("maxAge", maxAge); 
         MySqlDataReader reader = command.ExecuteReader(); 
@@ -281,9 +288,15 @@ class StudentModel
         Student student =  new Student(); 
         student.id = reader.GetFieldValue<int>(0); 
         student.fullname = reader.GetString(1);
-        student.age = reader.GetFieldValue<int>(2); 
+
+        if (reader.IsDBNull(2)) student.age = null;
+        else student.age = reader.GetFieldValue<int>(2);
+        
         student.specialty = reader.GetString(3);   
-        student.tutorId = reader.GetFieldValue<int>(4);
+        
+        if (reader.IsDBNull(4)) student.tutorId = null;
+        else student.tutorId = reader.GetFieldValue<int>(4);
+        
         return student;
     }
 
@@ -292,14 +305,21 @@ class StudentModel
         List<string> res = new List<string>();
         for (int i = 0; i < queryLength; i++)
         {
-            res.Add(reader.GetString(i).Trim());
+            if (reader.IsDBNull(i))
+            {
+                res.Add("-");
+            }
+            else
+            {
+                res.Add(reader.GetString(i).Trim());
+            }
         }
         
         return res;
     }
 }
 
-class TeacherModel
+class TeacherModel 
 {
     private MySqlConnection connection;
 
@@ -348,44 +368,6 @@ class TeacherModel
             return null; 
         } 
     }
-
-    // public List<Teacher> GetTopTeachersForStatistics()
-    // {
-    //     MySqlCommand command = connection.CreateCommand(); 
-    //     command.CommandText = @"SELECT * from Teacher 
-    //         ORDER BY experience DESC
-    //         limit 6";
-    //     MySqlDataReader reader = command.ExecuteReader();
-
-    //     List<Teacher> res = new List<Teacher>();
-    //     while (reader.Read())
-    //     {
-    //         Teacher teacher = ReadTeacher(reader); 
-    //         res.Add(teacher);
-    //     } 
-
-    //     return res;
-    // }
-
-    // public List<Teacher> GetGroupAbsentTeachers()
-    // {
-    //     MySqlCommand command = connection.CreateCommand(); 
-    //     command.CommandText = $@"SELECT * FROM Teacher 
-    //         LEFT JOIN Student ON Teacher.id = Student.tutorId
-    //         WHERE NOT EXISTS (
-    //         SELECT * FROM Student
-    //         WHERE Student.tutorId = Teacher.id);";
-    //     MySqlDataReader reader = command.ExecuteReader(); 
-    //     List<Teacher> res = new List<Teacher>();
-    //     while (reader.Read())
-    //     {
-    //         Teacher teacher = ReadTeacher(reader); 
-    //         res.Add(teacher);
-    //     } 
-
-    //     reader.Close(); 
-    //     return res;
-    // }
 
     public Dictionary<string, long> GetTeacherSubjectDistribution()
     {
@@ -439,10 +421,15 @@ class TeacherModel
     public List<List<string>> SearchTeachersByFullanme(string fullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT fullname, experience, title 
+        command.CommandText = $@"(SELECT fullname, experience, title 
             FROM Teacher CROSS JOIN Subject
             WHERE Teacher.subjectId = Subject.id
-            AND fullname Like '%{fullnameFilter}%'";
+            AND fullname Like '%{fullnameFilter}%')
+            UNION
+            (SELECT fullname, experience, fullname = NULL 
+            FROM Teacher
+            WHERE Teacher.subjectId IS NULL
+            AND fullname Like '%{fullnameFilter}%')";
         command.Parameters.AddWithValue("fullnameFilter", fullnameFilter); 
         MySqlDataReader reader = command.ExecuteReader(); 
         List<List<string>> res = new List<List<string>>();
@@ -500,7 +487,14 @@ class TeacherModel
         List<string> res = new List<string>();
         for (int i = 0; i < queryLength; i++)
         {
-            res.Add(reader.GetString(i).Trim());
+            if (reader.IsDBNull(i))
+            {
+                res.Add("-");
+            }
+            else
+            {
+                res.Add(reader.GetString(i).Trim());
+            }
         }
         
         return res;
@@ -512,7 +506,8 @@ class TeacherModel
         teacher.id = reader.GetFieldValue<int>(0); 
         teacher.fullname = reader.GetString(1);
         teacher.experience = reader.GetFieldValue<int>(2); 
-        teacher.subjectId = reader.GetFieldValue<int>(3);
+        if (reader.IsDBNull(3)) teacher.subjectId = null;
+        else teacher.subjectId = reader.GetFieldValue<int>(3);
         return teacher;
     }
 }
@@ -529,8 +524,6 @@ class SubjectModel
 
     public int GenerateData(int rows)
     {
-        // Random random = new Random();
-        // string[] titles = new string[] {"Algebra", "Geometry", "Biology", "English", "Spanish", "PE", "Crafts", "Geography", "Science", "Physics", "History", "IT", "English Literature", "Foreign literature"};
         MySqlCommand command = connection.CreateCommand();
         command.CommandText = $@"INSERT INTO Subject(title, examDate)
             WITH RECURSIVE nums AS (
@@ -544,7 +537,6 @@ class SubjectModel
                 ELT(0.5 + RAND() * 11, 'Algebra', 'Geometry', 'Biology', 'English', 'Spanish', 'PE', 'Crafts', 'Geography', 'Science', 'Physics', 'History', 'IT', 'English Literature', 'Foreign literature') AS res3,
                 CURRENT_DATE + INTERVAL FLOOR(RAND() * 120) DAY
                 FROM nums";
-        // command.Parameters.AddWithValue("title", titles[random.Next(0, titles.Length-1)]);
         command.Parameters.AddWithValue("rows", rows);
         int res = command.ExecuteNonQuery();
         return res;
@@ -621,7 +613,14 @@ class SubjectModel
         List<string> res = new List<string>();
         for (int i = 0; i < queryLength; i++)
         {
-            res.Add(reader.GetString(i).Trim());
+            if (reader.IsDBNull(i))
+            {
+                res.Add("-");
+            }
+            else
+            {
+                res.Add(reader.GetString(i).Trim());
+            }
         }
         
         return res;
@@ -752,7 +751,7 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudent(string studentFullnameFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, performance.date 
             FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
@@ -773,7 +772,7 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudentAndSubject(string studentFullnameFilter, string subjectFilter)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, performance.date 
             FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
@@ -795,12 +794,12 @@ class PerformanceModel
     public List<List<string>> SearchPerformancesByStudentAndDate(string studentFullnameFilter, DateTime dateMinValue)
     {
         MySqlCommand command = connection.CreateCommand(); 
-        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, date 
+        command.CommandText = $@"SELECT Student.fullname, Subject.title, mark, performance.date 
             FROM Performance LEFT JOIN Student 
             ON Performance.studentId = Student.id 
             LEFT JOIN Subject ON Performance.subjectId = Subject.id
             WHERE fullname Like '%{studentFullnameFilter}%'
-            AND date >= '{dateMinValue.ToString("yyyy-M-dd hh:mm:ss")}'";
+            AND performance.date  >= '{dateMinValue.ToString("yyyy-M-dd hh:mm:ss")}'";
         command.Parameters.AddWithValue("studentFullnameFilter", studentFullnameFilter); 
         command.Parameters.AddWithValue("dateMinValue", dateMinValue.ToString("yyyy-M-dd hh:mm")); 
         MySqlDataReader reader = command.ExecuteReader(); 
@@ -820,7 +819,14 @@ class PerformanceModel
         List<string> res = new List<string>();
         for (int i = 0; i < queryLength; i++)
         {
-            res.Add(reader.GetString(i).Trim());
+            if (reader.IsDBNull(i))
+            {
+                res.Add("-");
+            }
+            else
+            {
+                res.Add(reader.GetString(i).Trim());
+            }
         }
         
         return res;
@@ -985,7 +991,14 @@ class TeacherStudentModel
         List<string> res = new List<string>();
         for (int i = 0; i < queryLength; i++)
         {
-            res.Add(reader.GetString(i).Trim());
+            if (reader.IsDBNull(i))
+            {
+                res.Add("-");
+            }
+            else
+            {
+                res.Add(reader.GetString(i).Trim());
+            }
         }
         
         return res;

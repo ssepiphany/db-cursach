@@ -7,36 +7,6 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 
 static class GraphicsBuilder
 {
-    // public static string BuildTopTeacherGraphic(List<Teacher> teachers)
-    // {
-    //     var plt = new ScottPlot.Plot(600, 400);
-
-    //     string[] labels = new string[6];
-
-    //     int barCount = labels.Length;
-    //     Random rand = new Random(0);
-    //     double[] xs = DataGen.Consecutive(barCount);
-
-    //     double[] ys = new double[6];
-
-    //     for (int i = 0; i < labels.Length; i++)
-    //     {
-    //         labels[i] = teachers[i].fullname;
-    //         ys[i] = teachers[i].experience;
-    //     }
-
-    //     plt.PlotBar(xs, ys, showValues: true);
-    //     plt.YLabel("Years of experience");
-
-    //     plt.Grid(enable: false, lineStyle: LineStyle.Dot);
-
-    //     plt.XTicks(xs, labels);
-    //     string graphicPath = "PlotTypes_Bar_Quickstart.png";
-
-    //     plt.SaveFig(graphicPath);
-    //     return graphicPath;
-    // }
-
     public static string BuildTeacherSubjectDistribution(Dictionary<string, long> res)
     {
         var plt = new ScottPlot.Plot(700, 600);
@@ -50,13 +20,12 @@ static class GraphicsBuilder
             values[i] = res[subjects[i]];
         }
 
-        plt.PlotPie(values, subjects, showValues: true, showLabels: false);
+        var pie = plt.AddPie(values);
+        pie.SliceLabels = subjects;
+        pie.ShowValues = true;
         plt.Legend();
+        plt.Title($"Teachers-subject distribution"); 
 
-        plt.Grid(false);
-        plt.Frame(false);
-        plt.Title($"Teachers-subject distribution");
-        // plt.Ticks(false, false);
         string filePath = "Teachers-subject distribution.png";
 
         plt.SaveFig(filePath);
@@ -80,15 +49,16 @@ static class GraphicsBuilder
         {
             ys[i] = Math.Round((double)res[labels[i]], 1);
         }
-
-        plt.PlotBar(xs, ys, showValues: true);
+        var bar = plt.AddBar(ys, xs);
+         
+        bar.ShowValuesAboveBars = true;
         plt.YLabel("Average mark");
         plt.XLabel("Specialty");
 
         plt.Grid(enable: false, lineStyle: LineStyle.Dot);
 
         plt.XTicks(xs, labels);
-        string graphicPath = "AverageSpecialtyMark.png";
+        string graphicPath = "Average Specialty Mark.png";
 
         plt.SaveFig(graphicPath);
         return graphicPath;
@@ -112,12 +82,15 @@ static class GraphicsBuilder
             ys[i] = Math.Round((double)res[labels[i]], 1);
         }
 
-        plt.PlotBar(xs, ys, showValues: true);
+        var bar = plt.AddBar(ys, xs);
+         
+        bar.ShowValuesAboveBars = true;
         plt.YLabel($"{fullname} performance");
 
         plt.Grid(enable: false, lineStyle: LineStyle.Dot);
 
         plt.XTicks(xs, labels);
+        plt.XAxis.TickLabelStyle(rotation: 45);
         string graphicPath = $"{fullname} Performance.png";
 
         plt.SaveFig(graphicPath);
@@ -142,12 +115,15 @@ static class GraphicsBuilder
             ys[i] = Math.Round((double)res[labels[i]], 1);
         }
 
-        plt.PlotBar(xs, ys, showValues: true);
+        var bar = plt.AddBar(ys, xs);
+         
+        bar.ShowValuesAboveBars = true;
         plt.YLabel($"\"{specialty}\" performance");
 
         plt.Grid(enable: false, lineStyle: LineStyle.Dot);
 
         plt.XTicks(xs, labels);
+        plt.XAxis.TickLabelStyle(rotation: 45);
         string graphicPath = $"{specialty} Performance.png";
 
         plt.SaveFig(graphicPath);
@@ -172,7 +148,8 @@ static class GraphicsBuilder
             strDates[i] = dates[i].ToShortDateString();
         }
 
-        plt.PlotScatter(xs, ys);
+        plt.AddScatter(xs, ys);
+        plt.XAxis.DateTimeFormat(true);
         plt.XTicks(xs, strDates);
         plt.XAxis.TickLabelStyle(rotation: 90);
 

@@ -81,7 +81,7 @@ static class View
 
     public static void DisplayPerformanceSearch(List<List<string>> table)
     {
-        List<string> attrs = new List<string> {"Student fullname", "Subject title", "Mark", "Exam date"};
+        List<string> attrs = new List<string> {"Student fullname", "Subject title", "Mark", "Date"};
         int counter = 0; 
         for (int i = 0; i <= table.Count; i++)
         {

@@ -4,9 +4,9 @@ class Student
 {
     public int id;
     public string fullname;
-    public int age;
+    public int? age;
     public string specialty;
-    public int tutorId;
+    public int? tutorId;
 
     public Student() { }
 
@@ -25,7 +25,7 @@ class Teacher
     public int id;
     public string fullname;
     public int experience;
-    public int subjectId;
+    public int? subjectId;
 
     public Teacher() {}
 
